@@ -1,0 +1,4 @@
+# Actualizamos imagen de kubeadm
+- name: "[kubeadm] - Instalando"
+  become: yes
+  shell: kubeadm config images pull

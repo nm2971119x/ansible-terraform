@@ -1,0 +1,31 @@
+# Esta parte la tengo factorizada por si se requieren distintos source.list mas adelante y poder tener mejor separados las tasks
+# me ha parecido mas conveniente a tener un fichero muy extenso en el install
+
+# Agregamos las llaves para los nuevos repositorios
+- name: "apt-key => https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+  become: yes
+  ansible.builtin.apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+- name: "apt-key => https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.22/xUbuntu_20.04/Release.key"
+  become: yes
+  ansible.builtin.apt_key:
+    url: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.22/xUbuntu_20.04/Release.key
+    state: present
+- name: "apt-key => https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/Release.key"
+  become: yes
+  ansible.builtin.apt_key:
+    url: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/Release.key
+    state: present
+
+# Copiamos los repositorios apt de Kubernetes y cri-o
+- name: Copiando repositorios
+  become: yes
+  copy:
+    src: roles/install/files/kubernetes.repo.list
+    dest: /etc/apt/sources.list.d
+
+# Actualizamos apt nuevamente , vaya a ver conflictos con nuevos paquetes
+- name: "apt update && apt dist-upgrade"
+  become: yes
+  apt: force_apt_get=yes update_cache=yes upgrade=dist

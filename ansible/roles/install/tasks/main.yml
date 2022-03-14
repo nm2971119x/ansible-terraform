@@ -1,0 +1,9 @@
+- include_tasks: apt.yml
+- include_tasks: install.yml
+  when: "('workers' in group_names) or ('master' in group_names)"
+- include_tasks: systemd.yml
+  when: "('workers' in group_names) or ('master' in group_names)"
+- include_tasks: kubeadm.yml
+  when: "('workers' in group_names) or ('master' in group_names)"
+- include_tasks: nfs-server.yml
+  when: "'nfs-server' in group_names"

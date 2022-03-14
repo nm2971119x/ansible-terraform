@@ -1,0 +1,13 @@
+# Generamos App game2048 * test *
+
+- name: "Generando plantilla game2048"
+  become: yes
+  template:
+    src: roles/apps/templates/game2048.yml.j2
+    dest: /root/game2048.yml
+
+- name: "Deploy game2048"
+  become: yes
+  shell: kubectl apply -f /root/game2048.yml
+
+

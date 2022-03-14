@@ -1,0 +1,3 @@
+# Tasks para servidor NFS
+- include_tasks: nfs.yml
+  when: "'nfs-server' in group_names"

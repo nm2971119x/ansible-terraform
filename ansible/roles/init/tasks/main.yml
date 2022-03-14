@@ -1,0 +1,58 @@
+# Actualizamos los nombres de las maquinas, si clonamos imagenes nos aseguramos que estas arranquen con su host correcto
+- name: "Actualizando hostsname"
+  become: yes
+  hostname:
+   name: "{{ inventory_hostname }}"
+
+# Antes de seguir haciendo nada , actualizamos las maquinas con apt update && dist-upgrade
+- name: "apt update && apt dist-upgrade"
+  become: yes
+  apt: force_apt_get=yes update_cache=yes upgrade=dist
+
+# Instalamos los paquetes basicos necesarios , bueno emacs no es necesario, pero es mi editor principal.
+- name: "Instalando: net-tools & chrony & emacs"
+  become: yes
+  apt:
+    pkg:
+      - emacs-nox
+      - net-tools
+      - chrony
+
+# Fijamos la zona-horaria y forzamos ntp para tener sync los servers
+- name: "Fiajando timezone & ntp"
+  become: yes
+  shell: timedatectl set-timezone Europe/Madrid && timedatectl set-ntp true
+
+# Comentamos la entrada de swap en /etc/fstab , la regla valida que empieze por /swap.img , igualmente se fuerza por sysctl
+- name: Comentando swap /etc/fstab
+  become: yes
+  shell: sed -i 's/^\/swap\(.*\)$/#\/swap\1/g' /etc/fstab
+  args:
+    warn: false
+
+# Deshabilitamos la swap
+- name: "swap off"
+  become: yes
+  shell: swapoff -a
+
+# Copiamos valores a sobreescribir para sysctl , se carguen al final de todos para forzar que sean los correctos (99-)
+- name: Fijando sysctl
+  become: yes
+  copy:
+    src: roles/init/files/sysctl-kubernetes.conf
+    dest: /etc/sysctl.d/99-kubernetes.conf
+
+- name: Actualizando sysctl
+  become: yes
+  shell: sysctl --system
+
+# LKM
+- name: Iniciando modulos Kernel
+  become: yes
+  shell: modprobe br_netfilter overlay
+
+- name: Copiando modprobe.d/kubernetes.conf
+  become: yes
+  copy:
+    src: roles/init/files/modprobe-kubernetes.conf
+    dest: /etc/modprobe.d/kubernetes.conf

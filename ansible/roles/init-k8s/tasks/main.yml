@@ -1,0 +1,7 @@
+# Iniciamos K8S por un lado las tareas para workers y masters
+
+- include_tasks: master.yml
+  when: "'master' in group_names"
+
+- include_tasks: workers.yml
+  when: "('workers' in group_names) or ('master-join' in group_names)"

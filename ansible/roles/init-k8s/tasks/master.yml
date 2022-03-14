@@ -1,0 +1,51 @@
+# Iniciamos K8S Master
+    
+# Creamos la CNI solo master
+- name: "Creando CNI"
+  become: yes
+  shell: kubeadm init --pod-network-cidr {{ pod_cidr }}
+
+# Habilitamos control de kubectl
+- name: "Kubectl /root"
+  become: yes
+  shell: mkdir -p /root/.kube && cp -i /etc/kubernetes/admin.conf /root/.kube/config && chown $(id -u):$(id -g) /root/.kube/config
+
+# Lanzamos SDN - HomeLab
+- name: "SDN HomeLab : kubectl => tigera-operator.yml"
+  become: yes
+  shell: kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
+  when: homelab_deploy == "enabled"
+  
+# Generamos la plantilla de calico con la red ajustada a la definida en: {{ pod_cidr }} - HomeLab
+- name: "SDN HomeLab : kubectl => custom-resources.yaml"
+  become: yes
+  template:
+    src: roles/init-k8s/templates/custom-resources.yaml.j2
+    dest: /root/custom-resources.yaml
+  when: homelab_deploy == "enabled"
+
+# Lanzamos SDN - Azure
+- name: "SDN Azure - Canal"
+  become: yes
+  template:
+    src: roles/init-k8s/templates/flannel-calico-canal.yaml.j2
+    dest: /root/flannel-calico-canal.yaml
+  when: azure_deploy == "enabled"
+
+# Aplicamos Canal
+- name: "SDN Azure - kubectl => flannel-calico-canal.yaml"
+  become: yes
+  shell: kubectl apply -f /root/flannel-calico-canal.yaml
+  when: azure_deploy == "enabled"
+
+# Generamos la plantilla de haproxy ingress
+- name: "Plantilla => haproxy-ingress.yml"
+  become: yes
+  template:
+    src: roles/init-k8s/templates/haproxy-ingress.yaml
+    dest: /root/haproxy-ingress.yaml
+
+# Configuramos el ingress haproxy
+- name: "kubectl => haproxy-ingress.yml"
+  become: yes
+  shell: kubectl apply -f /root/haproxy-ingress.yml

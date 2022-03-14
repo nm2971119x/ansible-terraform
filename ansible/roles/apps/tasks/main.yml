@@ -1,0 +1,2 @@
+- include_tasks: game2048.yml
+  when: "'master' in group_names"

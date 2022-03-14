@@ -1,0 +1,13 @@
+[master-join]
+labk8s-master ansible_ssh_host=192.168.11.60 ansible_ssh_user=lab ansible_ssh_private_key_file=../secrets/key-ssh
+
+[master]
+labk8s-master ansible_ssh_host=192.168.11.60 ansible_ssh_user=lab ansible_ssh_private_key_file=../secrets/key-ssh
+
+[workers]
+k8s-node1 ansible_ssh_host=192.168.11.61 ansible_ssh_user=lab ansible_ssh_private_key_file=../secrets/key-ssh
+k8s-node2 ansible_ssh_host=192.168.11.62 ansible_ssh_user=lab ansible_ssh_private_key_file=../secrets/key-ssh
+k8s-node3 ansible_ssh_host=192.168.11.64 ansible_ssh_user=lab ansible_ssh_private_key_file=../secrets/key-ssh
+
+[fs]
+k8s-nfs ansible_ssh_host=192.168.11.63 ansible_ssh_user=lab ansible_ssh_private_key_file=../secrets/key-ssh

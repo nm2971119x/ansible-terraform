@@ -1,0 +1,21 @@
+# Instalamos los paquetes necesarios para kubernetes
+- name: Install Kubernetes
+  become: yes
+  apt:
+    pkg:
+      - kubelet
+      - kubeadm
+      - kubectl
+
+# Bloqueamos los paquetes de kubernetes... por si las moscas.
+- name: apt-hold kubernetes
+  become: yes
+  shell: apt-mark hold kubelet kubeadm kubectl
+
+# Instalamos cri-o
+- name: Install cri-o
+  become: yes
+  apt:
+    pkg:
+      - cri-o
+      - cri-o-runc

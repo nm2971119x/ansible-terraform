@@ -1,0 +1,14 @@
+- hosts:
+   - k8s-master
+   - k8s-node1
+   - k8s-node2
+   - k8s-node3
+   - k8s-nfs
+  gather_facts: false
+  vars_files:
+    - "group_vars/vars_lab.yml"
+  roles:
+    - init
+    - install
+    - init-k8s
+    - apps

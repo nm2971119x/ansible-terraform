@@ -1,0 +1,4 @@
+azure_deploy: 'enabled'
+pod_cidr: '192.169.0.0/16'
+azure_external_ip: '10.0.1.10'
+domain_ingress: 'mochi.arpa'

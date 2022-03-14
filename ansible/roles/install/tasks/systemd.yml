@@ -1,0 +1,11 @@
+# Servicios a activar en el despliegue de Kubernetes
+- name: "systemd services"
+  become: yes
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+#    daemon_reexec: yes
+  with_items:
+    - kubelet
+    - crio

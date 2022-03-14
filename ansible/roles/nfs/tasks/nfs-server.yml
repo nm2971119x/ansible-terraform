@@ -1,0 +1,23 @@
+# mkdir /srv/nfs
+- name: "NFS Server - mkdir /srv/nfs"
+  become: yes
+  file:
+    path: /srv/nfs
+    state: directory
+    
+# Generamos las entradas de /etc/exports
+- name: "NFS Server - /etc/exports"
+  become: yes
+  copy:
+    src: roles/init/files/modprobe-kubernetes.conf
+    dest: /etc/exports
+    
+# systemd nfs-server
+- name: "NFS Server - systemd services"
+  become: yes
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - nfs-server

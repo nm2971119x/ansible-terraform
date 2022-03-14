@@ -1,0 +1,10 @@
+- hosts:
+   - k8s-master
+   - k8s-node3
+  gather_facts: false
+  vars_files:
+    - "group_vars/vars_azure.yml"
+  roles:
+    - init
+    - install
+    - init-k8s

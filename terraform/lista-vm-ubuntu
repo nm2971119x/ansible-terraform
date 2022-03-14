@@ -1,0 +1,2 @@
+az vm image list --all --publisher Canonical --offer 0001-com-ubuntu-server-focal-daily --sku 20_04-daily-lts --location westeurope -o table
+

@@ -1,0 +1,4 @@
+deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable:/cri-o:/1.22/xUbuntu_20.04/ /
+deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/ /
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+

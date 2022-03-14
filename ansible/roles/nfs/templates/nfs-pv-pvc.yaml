@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kube-nfs-pv
+spec:
+  storageClassName: storage-nfs
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: {{ k8s-nfs-server }}
+    path: "/srv/labk8s"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: kube-nfs-pvc
+spec:
+  storageClassName: storage-nfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi

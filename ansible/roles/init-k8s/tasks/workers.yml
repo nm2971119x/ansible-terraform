@@ -1,0 +1,23 @@
+# Iniciamos K8S Workers
+    
+# Generamos el token para el join , de este modo podemos siempre agregar nodos al master sin interferir en el master
+# pues en el inventario de ansible dejo una entrada solo para master-join y este se encarga de generar el token y exportarlo para el join
+# se fija un TTL bajo de 15 minutos para este fin
+
+- name: "Generando Token"
+  become: yes
+  shell: kubeadm token create --print-join-command --ttl 15m
+  register: kubeadm_token
+  when: "'master-join' in group_names"
+
+- name: "Registramos vaar global register kubeadm join"
+  add_host:
+    name: "k8s_token"
+    cmd: "{{ kubeadm_token.stdout }}"
+  when: "'master-join' in group_names"
+
+# Vinculamos los nodos al master
+- name: "kubeadm join"
+  become: yes
+  shell: "{{ hostvars['k8s_token']['cmd'] }}"
+  when: "'workers' in group_names"

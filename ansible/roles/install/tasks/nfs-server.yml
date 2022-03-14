@@ -1,0 +1,6 @@
+# Instalamos nfs-kernel-server
+- name: Install NFS Kernel Server
+  become: yes
+  apt:
+    pkg:
+      - nfs-kernel-server
